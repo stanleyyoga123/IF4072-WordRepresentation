@@ -1,12 +1,19 @@
 import os
 import pandas as pd
 
+import tensorflow as tf
 from tensorflow.keras.optimizers import Adam
 
 from src.word_embedding_with_context import train_bert
 
 
 def main_bert():
+    physical_devices = tf.config.list_physical_devices('GPU')
+    try:
+        tf.config.experimental.set_memory_growth(physical_devices[0], True)
+    except:
+        pass
+
     train_path = os.path.join("data", "train.csv")
     test_path = os.path.join("data", "test.csv")
     df_train = pd.read_csv(train_path)
@@ -23,7 +30,7 @@ def main_bert():
 
     optimizer = Adam(learning_rate=1e-4)
     metrics = ["accuracy"]
-    train_bert(x_train, y_train, x_test, y_test, "binary_crossentropy", optimizer, metrics)
+    train_bert(x_train, y_train, x_test, y_test, "binary_crossentropy", optimizer, metrics, batch_size=1, max_length=128)
 
 
 if __name__ == "__main__":

@@ -15,7 +15,7 @@ class Tokenizer:
             add_special_tokens=True,
             max_length=self.max_length,
             truncation=True,
-            padding=True,
+            padding='max_length',
             return_tensors="tf",
         )
         return {

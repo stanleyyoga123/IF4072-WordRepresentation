@@ -3,6 +3,7 @@ import datetime
 import pickle
 import timeit
 
+import numpy as np
 from sklearn.metrics import accuracy_score
 
 from src.word_embedding_with_context import Tokenizer, bert
@@ -20,6 +21,7 @@ def train_bert(
     batch_size=4,
     epochs=5,
     verbose=1,
+    max_length=512,
     save_config=True,
     save_model=True,
     save_pred=True,
@@ -30,7 +32,7 @@ def train_bert(
         print("Tokenizing")
 
     start = timeit.default_timer()
-    tokenizer = Tokenizer()
+    tokenizer = Tokenizer(max_length=max_length)
     x = tokenizer.tokenize(x_train)
     y = y_train
 
@@ -39,7 +41,7 @@ def train_bert(
 
     print("Build Model")
     start = timeit.default_timer()
-    model = bert(length=len(x['input_ids'][0]))
+    model = bert(length=len(x["input_ids"][0]))
 
     if log:
         print(f"Time Taken: {timeit.default_timer() - start:.4f}")
@@ -69,31 +71,32 @@ def train_bert(
     if log:
         print(f"Time Taken: {timeit.default_timer() - start:.4f}")
 
-    y_pred = model.predict(x_test, batch_size=batch_size, verbose=verbose)
-
+    y_pred_proba = model.predict(x_test, batch_size=batch_size, verbose=verbose)
+    y_pred = np.round(y_pred_proba)
     # Currently evaluation use Accuracy
     score = accuracy_score(y_test, y_pred)
     print(f"Validation Score: {score}")
 
     if save_model or save_config or save_pred:
-        model_folder = os.path.join(model_path, datetime.datetime.now().isoformat())
+        model_folder = os.path.join(model_path, datetime.datetime.now().strftime("%Y-%m-%d %H.%M.%S"))
         model_name = "bert.h5"
         config_name = "config.txt"
         pred_name = "y_pred.pkl"
 
-        os.mkdir(model_path)
+        os.mkdir(model_folder)
         if save_model:
             model.save_weights(os.path.join(model_folder, model_name))
 
         if save_config:
             f = open(os.path.join(model_folder, config_name), "w+")
             train_config = ""
+            train_config += f"max_length: {max_length}\n"
             train_config += f"loss: {loss}\n"
-            train_config += f"optimizer: {optimizer}\n"
-            train_config += f"metrics: {metrics}\n"
-            train_config += f"validation_split: {validation_split}\n"
+            train_config += f"optimizer: {optimizer.get_config()}\n"
             train_config += f"batch_size: {batch_size}\n"
             train_config += f"epochs: {epochs}\n"
+            train_config += f"metrics: {metrics}\n"
+            train_config += f"validation_split: {validation_split}\n"
             train_config += f"history\n{history.history}\n"
             train_config += f"evaluation: {score}\n"
             f.write(train_config)
