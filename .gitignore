@@ -134,5 +134,11 @@ bin/**
 # dataset
 data/*
 
+# personal research notebooks
+notebooks/*
+
 # custom venv files
 nlp-venv
+
+# vscode config file
+.vscode/*
