@@ -5,15 +5,15 @@ from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 
 # Global variable
-vocabulary_size = 15000
+vocabulary_size = 1000
 oov_tok = "<OOV>"
-max_length = 512
+max_length = 128
 
 configs = {
     "lower": True,
     "split": " ",
-    "filters": "",
     "num_words": vocabulary_size,
+    "filters": "",
     "char_level": False,
     "oov_token": oov_tok,
 }

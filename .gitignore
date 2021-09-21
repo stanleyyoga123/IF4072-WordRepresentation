@@ -133,3 +133,6 @@ bin/**
 
 # dataset
 data/*
+
+# custom venv files
+nlp-venv
