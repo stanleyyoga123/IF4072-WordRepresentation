@@ -4,14 +4,16 @@ import pickle
 import timeit
 
 import numpy as np
+import pandas as pd
 
 import tensorflow as tf
+from tensorflow.keras.utils import plot_model
 from sklearn.model_selection import train_test_split
 
 from sklearn.metrics import accuracy_score
 
 from src.word_embedding.tokenizer import W2VTokenizer
-from src.word_embedding.word2vec import build_word2vec
+from src.word_embedding.word2vec import build_word2vec, build_fasttext
 from src.word_embedding.classifier import create_classifier
 
 
@@ -32,9 +34,8 @@ def train_word2vec(
     save_model=True,
     save_pred=True,
     model_path=os.path.join("bin", "w2v"),
-    report_path=os.path.join("reports", "w2v"),
     log=True,
-    detail="exp-1",
+    detail="default-exp",
 ):
     if log:
         print("Tokenizing Training data...")
@@ -50,7 +51,7 @@ def train_word2vec(
 
     print("Build Word2Vec")
     start = timeit.default_timer()
-    w2v = build_word2vec(x, log=False)
+    w2v = build_fasttext(x, log=True)
 
     embedding_matrix = tokenizer.get_embedding_matrix(w2v, 100)
 
@@ -65,7 +66,7 @@ def train_word2vec(
 
     # === Defining Early Stopping ===
     early_stopping = tf.keras.callbacks.EarlyStopping(
-        monitor="val_f1",
+        monitor="val_accuracy",
         verbose=verbose,
         patience=10,
         mode="max",
@@ -73,7 +74,7 @@ def train_word2vec(
     )
 
     # === Defining model checkpoint ===
-    checkpoint_path = os.path.join(model_path, "lstm-w2v.ckpt")
+    checkpoint_path = os.path.join(model_path, "w2v-clf-checkpoint.ckpt")
     checkpoint_dir = os.path.dirname(checkpoint_path)
 
     # Create a callback that saves the model's weights
@@ -125,15 +126,23 @@ def train_word2vec(
         pred_name = "y_pred.pkl"
 
         if save_model:
+            # Save classifier
             if log:
                 print("Saving classifier weight...")
             weight_path = os.path.join(model_folder, clf_name)
             model.save_weights(weight_path)
 
+            # Save word2vec
             if log:
                 print("Saving word2vec model...")
             w2v_path = os.path.join(model_folder, model_name)
             w2v.save(w2v_path)
+
+            # Save image
+            # if log:
+            #     print("Saving word2vec model...")
+            # dot_img_file = os.path.join(model_folder, model_name + "-img.jpg")
+            # plot_model(model, to_file=dot_img_file, show_shapes=True)
 
         if save_config:
             configs = {
@@ -151,7 +160,39 @@ def train_word2vec(
             write_configs(os.path.join(model_folder, config_name), **configs)
 
         if save_pred:
+            # Saving result
             pickle.dump(y_pred, open(os.path.join(model_folder, pred_name), "wb"))
+
+            if log:
+                print("Saving Error Snapshot...")
+
+            test_result_df = pd.DataFrame(
+                {
+                    "text": x_test,
+                    "label": np.argmax(y_test, axis=1),
+                    "pred": np.argmax(y_pred, axis=1),
+                }
+            )
+            # Type II error
+            FP = test_result_df.loc[
+                (test_result_df["label"] == 0) & (test_result_df["pred"] == 1)
+            ]
+
+            # Type I error
+            FN = test_result_df.loc[
+                (test_result_df["label"] == 1) & (test_result_df["pred"] == 0)
+            ]
+
+            if log:
+                print(
+                    f"False Positive (Type II Error) : {len(FP)} / {len(test_result_df)}"
+                )
+            FP.to_csv(os.path.join(model_folder, "FP.csv"), index=False)
+            if log:
+                print(
+                    f"False Negative (Type I Error) : {len(FN)} / {len(test_result_df)}"
+                )
+            FN.to_csv(os.path.join(model_folder, "FN.csv"), index=False)
 
 
 def write_configs(path, **kwargs):

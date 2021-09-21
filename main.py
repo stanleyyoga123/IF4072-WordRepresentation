@@ -29,10 +29,10 @@ def main_w2v():
     train['text_a'] = train.text_a.progress_apply(simple_preprocess)
     test['text_a'] = test.text_a.progress_apply(simple_preprocess)
 
-    x_train = train["text_a"].values[:200]
-    y_train = train["label"][:200]
-    x_test = test["text_a"].values[:200]
-    y_test = test["label"][:200]
+    x_train = train["text_a"].values
+    y_train = train["label"]
+    x_test = test["text_a"].values
+    y_test = test["label"]
 
     maps = {"no": 0, "yes": 1}
     y_train = y_train.replace(maps).values
@@ -53,7 +53,7 @@ def main_w2v():
         METRICS,
         batch_size=64,
         max_length=128,
-        detail="exp-2"
+        detail="exp-1-fasttext"
     )
 
 
