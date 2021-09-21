@@ -1,6 +1,6 @@
 from transformers import TFAutoModel
 
-from tensorflow.keras.layers import Input, Dropout, Dense, GlobalAveragePooling1D
+from tensorflow.keras.layers import Input, Dropout, Dense, GlobalAveragePooling1D, LSTM
 from tensorflow.keras.models import Model
 
 
@@ -18,8 +18,8 @@ def bert(model_name="bert-base-uncased", length=512):
     }
 
     x = bert_layer(inputs)[0]
-    x = GlobalAveragePooling1D()(x)
-    x = Dense(128, activation="relu")(x)
+    x = LSTM(128)(x)
+    x = Dense(64, activation='relu')(x)
     x = Dense(1, activation="sigmoid")(x)
 
     model = Model(inputs=inputs, outputs=x)
