@@ -13,7 +13,7 @@ configs = {
     "lower": True,
     "split": " ",
     "num_words": vocabulary_size,
-    "filters": "",
+    "filters": '•ˆ²≥≤⅔¢×ĺ±…–ƪʃںᵤₒᵗʰᵃᶰᵏᵧₒᵤ!"#$%&()*+,-./:;<=>?@[\\]^_`{|}~\t\n',
     "char_level": False,
     "oov_token": oov_tok,
 }

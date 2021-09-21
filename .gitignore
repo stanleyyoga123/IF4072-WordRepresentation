@@ -137,6 +137,9 @@ data/*
 # personal research notebooks
 notebooks/*
 
+# reports
+reports/*
+
 # custom venv files
 nlp-venv
 

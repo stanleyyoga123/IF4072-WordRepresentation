@@ -45,9 +45,10 @@ METRICS = [
 ]
 
 
-
 # Architecture : Input -> Embedding -> LSTM -> Dropout (to prevent overfit) -> Flatten -> Dropout (again...) -> Dense (output layer)
-def create_classifier(vocabulary_size=1000, max_length=128,embedding_configs=None, metrics=METRICS):
+def create_classifier(
+    vocabulary_size=1000, max_length=128, embedding_configs=None, metrics=METRICS
+):
     """
     Model Architecture :
           Input
@@ -58,7 +59,7 @@ def create_classifier(vocabulary_size=1000, max_length=128,embedding_configs=Non
             |
          Dropout
             |
-         Out put
+           Out
     """
     model = Sequential()
     if embedding_configs == None:
