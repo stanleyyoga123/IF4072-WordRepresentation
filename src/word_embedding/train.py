@@ -51,7 +51,7 @@ def train_word2vec(
 
     print("Build Word2Vec")
     start = timeit.default_timer()
-    w2v = build_fasttext(x, log=True)
+    w2v = build_word2vec(x, log=True)
 
     embedding_matrix = tokenizer.get_embedding_matrix(w2v, 100)
 
@@ -151,7 +151,7 @@ def train_word2vec(
                 "optimizer": optimizer.get_config(),
                 "batch_size": batch_size,
                 "epochs": epochs,
-                "metrics": [metric.name for metric in metrics],
+                "metrics": "acc",
                 "validation_split": validation_split,
                 "history": history.history,
                 "evaluation": score,

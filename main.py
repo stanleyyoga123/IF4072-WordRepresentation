@@ -19,7 +19,7 @@ tqdm.pandas()
 
 def main_w2v():
 
-    METRICS = [Accuracy(name="accuracy")]
+    METRICS = ["accuracy"]
 
     train_path = os.path.join("data", "train.csv")
     test_path = os.path.join("data", "test.csv")
@@ -53,7 +53,7 @@ def main_w2v():
         METRICS,
         batch_size=64,
         max_length=128,
-        detail="exp-1-fasttext"
+        detail="exp-2-fasttext"
     )
 
 
