@@ -4,7 +4,7 @@ from tensorflow.keras.layers import Input, Dropout, Dense, GlobalAveragePooling1
 from tensorflow.keras.models import Model
 
 
-def bert(model_name="bert-base-uncased", length=512):
+def bert(model_name="bert-base-multilingual-uncased", length=512):
     bert = TFAutoModel.from_pretrained(model_name)
 
     bert_layer = bert.bert
