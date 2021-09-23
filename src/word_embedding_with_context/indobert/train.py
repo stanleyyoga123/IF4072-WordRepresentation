@@ -1,5 +1,6 @@
 import os
 import pandas as pd
+import datetime
 
 from tqdm import tqdm
 import torch
@@ -150,6 +151,21 @@ def train_indobert(
 
     # Save prediction
     df = pd.DataFrame({"label": list_hyp}).reset_index()
-    df.to_csv(os.path.join(folder, "prediction.csv"), index=False)
 
-    torch.save(os.path.join(folder, "model.pth"))
+    model_folder = os.path.join(folder, datetime.datetime.now().strftime("%Y-%m-%d %H.%M.%S"))
+    os.mkdir(model_folder)
+
+    df_path = os.path.join(model_folder, 'prediction.csv')
+    model_path = os.path.join(model_folder, 'indobert.pth')
+    config_path = os.path.join(model_folder, 'config.txt')
+
+    df.to_csv(df_path, index=False)
+    torch.save(model_path)
+
+    train_config = ''
+    train_config += f'epochs: {epochs}\n'
+    train_config += f'max_length: {max_seq_len}\n'
+    train_config += f'learning_rate: {learning_rate}\n'
+    train_config += f'batch_size: {batch_size}\n'
+    f = open(config_path, 'w+')
+    f.write(train_config)
