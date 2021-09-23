@@ -6,7 +6,7 @@ import timeit
 import numpy as np
 from sklearn.metrics import accuracy_score
 
-from src.word_embedding_with_context import Tokenizer, bert
+from src.word_embedding_with_context.bert import TokenizerBert, bert
 
 
 def train_bert(
@@ -32,7 +32,7 @@ def train_bert(
         print("Tokenizing")
 
     start = timeit.default_timer()
-    tokenizer = Tokenizer(max_length=max_length)
+    tokenizer = TokenizerBert(max_length=max_length)
     x = tokenizer.tokenize(x_train)
     y = y_train
 
@@ -90,6 +90,7 @@ def train_bert(
         if save_config:
             f = open(os.path.join(model_folder, config_name), "w+")
             train_config = ""
+            train_config += f"summary mode: \n{summary}\n"
             train_config += f"max_length: {max_length}\n"
             train_config += f"loss: {loss}\n"
             train_config += f"optimizer: {optimizer.get_config()}\n"
