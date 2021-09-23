@@ -17,6 +17,7 @@ def train_bert(
     loss,
     optimizer,
     metrics,
+    model_name='bert-base-uncased',
     validation_split=0.2,
     batch_size=4,
     epochs=5,
@@ -32,7 +33,7 @@ def train_bert(
         print("Tokenizing")
 
     start = timeit.default_timer()
-    tokenizer = TokenizerBert(max_length=max_length)
+    tokenizer = TokenizerBert(model_name=model_name, max_length=max_length)
     x = tokenizer.tokenize(x_train)
     y = y_train
 
@@ -41,7 +42,7 @@ def train_bert(
 
     print("Build Model")
     start = timeit.default_timer()
-    model = bert(length=len(x["input_ids"][0]))
+    model = bert(model_name=model_name, length=len(x["input_ids"][0]))
 
     if log:
         print(f"Time Taken: {timeit.default_timer() - start:.4f}")

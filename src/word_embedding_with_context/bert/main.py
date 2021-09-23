@@ -1,16 +1,23 @@
 import os
 import pandas as pd
-from tqdm import tqdm 
+from tqdm import tqdm
 
 import tensorflow as tf
 from tensorflow.keras.optimizers import Adam
 from gensim.utils import simple_preprocess
 
-from src.word_embedding_with_context import train_bert
+from src.word_embedding_with_context.bert import train_bert
 
 tqdm.pandas()
 
-def main_bert():
+
+def main_bert(
+    name="bert-base-uncased",
+    epochs=5,
+    batch_size=4,
+    learning_rate=3e-6,
+    max_seq_len=512,
+):
     physical_devices = tf.config.list_physical_devices("GPU")
     try:
         tf.config.experimental.set_memory_growth(physical_devices[0], True)
@@ -22,10 +29,10 @@ def main_bert():
     df_train = pd.read_csv(train_path)
     df_test = pd.read_csv(test_path)
 
-    df_train['text_a'] = df_train.text_a.progress_apply(simple_preprocess)
-    df_test['text_a'] = df_test.text_a.progress_apply(simple_preprocess)
-    df_train['text_a'] = df_train['text_a'].progress_apply(lambda x: ' '.join(x))
-    df_test['text_a'] = df_test['text_a'].progress_apply(lambda x: ' '.join(x))
+    df_train["text_a"] = df_train.text_a.progress_apply(simple_preprocess)
+    df_test["text_a"] = df_test.text_a.progress_apply(simple_preprocess)
+    df_train["text_a"] = df_train["text_a"].progress_apply(lambda x: " ".join(x))
+    df_test["text_a"] = df_test["text_a"].progress_apply(lambda x: " ".join(x))
 
     x_train = df_train["text_a"]
     y_train = df_train["label"]
@@ -36,7 +43,7 @@ def main_bert():
     y_train = y_train.replace(maps)
     y_test = y_test.replace(maps)
 
-    optimizer = Adam(learning_rate=3e-6)
+    optimizer = Adam(learning_rate=learning_rate)
     metrics = ["accuracy"]
     train_bert(
         x_train,
@@ -46,6 +53,8 @@ def main_bert():
         "binary_crossentropy",
         optimizer,
         metrics,
-        batch_size=4,
-        max_length=512,
+        epochs=epochs,
+        model_name=name,
+        batch_size=batch_size,
+        max_length=max_seq_len,
     )
