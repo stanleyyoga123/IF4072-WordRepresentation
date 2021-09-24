@@ -53,7 +53,6 @@ def pipeline(
 
     start = timeit.default_timer()
 
-    print(x[:100])
     if types == "ft":
         w2v = build_fasttext(x, config, log=True)
     else:
