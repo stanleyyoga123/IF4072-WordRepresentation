@@ -13,15 +13,17 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 
 from src.word_embedding.tokenizer import W2VTokenizer
-from src.word_embedding.word2vec import build_word2vec, build_fasttext
 from src.word_embedding.classifier import create_classifier
+from src.word_embedding.word2vec import build_word2vec, build_fasttext
 
 
-def train_word2vec(
+def pipeline(
     x_train,
     y_train,
     x_test,
     y_test,
+    types,
+    config,
     loss,
     optimizer,
     metrics,
@@ -49,9 +51,13 @@ def train_word2vec(
     if log:
         print(f"Time Taken: {timeit.default_timer() - start:.4f}")
 
-    print("Build Word2Vec")
     start = timeit.default_timer()
-    w2v = build_word2vec(x, log=True)
+
+    print(x[:100])
+    if types == "ft":
+        w2v = build_fasttext(x, config, log=True)
+    else:
+        w2v = build_word2vec(x, config, log=True)
 
     embedding_matrix = tokenizer.get_embedding_matrix(w2v, 100)
 
@@ -138,12 +144,6 @@ def train_word2vec(
             w2v_path = os.path.join(model_folder, model_name)
             w2v.save(w2v_path)
 
-            # Save image
-            # if log:
-            #     print("Saving word2vec model...")
-            # dot_img_file = os.path.join(model_folder, model_name + "-img.jpg")
-            # plot_model(model, to_file=dot_img_file, show_shapes=True)
-
         if save_config:
             configs = {
                 "max_length": max_length,
@@ -156,6 +156,8 @@ def train_word2vec(
                 "history": history.history,
                 "evaluation": score,
                 "detail": detail,
+                "type": "skip-gram" if config.get("sg") == 1 else "cbow",
+                "window": config.get("window"),
             }
             write_configs(os.path.join(model_folder, config_name), **configs)
 

@@ -2,7 +2,7 @@ from gensim.models import Word2Vec, FastText
 
 configs = {
     "window": 5,
-    "min_count": 1,
+    "sg": 0,
     "workers": -1,
 }
 
