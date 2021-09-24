@@ -160,7 +160,6 @@ def train_indobert(
     config_path = os.path.join(model_folder, 'config.txt')
 
     df.to_csv(df_path, index=False)
-    torch.save(model_path)
 
     train_config = ''
     train_config += f'epochs: {epochs}\n'
@@ -169,3 +168,5 @@ def train_indobert(
     train_config += f'batch_size: {batch_size}\n'
     f = open(config_path, 'w+')
     f.write(train_config)
+
+    # torch.save(model_path)

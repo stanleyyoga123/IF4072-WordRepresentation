@@ -24,15 +24,10 @@ def main_bert(
     except:
         pass
 
-    train_path = os.path.join("data", "train.csv")
-    test_path = os.path.join("data", "test.csv")
+    train_path = os.path.join("data", "cleaned_train.csv")
+    test_path = os.path.join("data", "cleaned_test.csv")
     df_train = pd.read_csv(train_path)
     df_test = pd.read_csv(test_path)
-
-    df_train["text_a"] = df_train.text_a.progress_apply(simple_preprocess)
-    df_test["text_a"] = df_test.text_a.progress_apply(simple_preprocess)
-    df_train["text_a"] = df_train["text_a"].progress_apply(lambda x: " ".join(x))
-    df_test["text_a"] = df_test["text_a"].progress_apply(lambda x: " ".join(x))
 
     x_train = df_train["text_a"]
     y_train = df_train["label"]

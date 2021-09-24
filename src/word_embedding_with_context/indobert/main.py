@@ -3,9 +3,9 @@ from src.word_embedding_with_context.indobert import train_indobert
 
 
 def main_indobert(epochs=5, batch_size=4, learning_rate=3e-6, max_seq_len=512):
-    train_path = os.path.join("data", "train.csv")
-    dev_path = os.path.join("data", "dev.csv")
-    test_path = os.path.join("data", "test.csv")
+    train_path = os.path.join("data", "cleaned_train.csv")
+    dev_path = os.path.join("data", "cleaned_test.csv")
+    test_path = os.path.join("data", "cleaned_test.csv")
 
     train_indobert(
         train_path,

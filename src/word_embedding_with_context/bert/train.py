@@ -18,13 +18,12 @@ def train_bert(
     optimizer,
     metrics,
     model_name='bert-base-uncased',
-    validation_split=0.2,
     batch_size=4,
     epochs=5,
     verbose=1,
     max_length=512,
     save_config=True,
-    save_model=True,
+    save_model=False,
     save_pred=True,
     model_path=os.path.join("bin", "bert"),
     log=True,
@@ -46,6 +45,15 @@ def train_bert(
 
     if log:
         print(f"Time Taken: {timeit.default_timer() - start:.4f}")
+    
+    if log:
+        print("Tokenizing Test")
+
+    start = timeit.default_timer()
+    x_test = tokenizer.tokenize(x_test)
+
+    if log:
+        print(f"Time Taken: {timeit.default_timer() - start:.4f}")
 
     summary = []
     model.summary(print_fn=lambda x: summary.append(x))
@@ -57,20 +65,11 @@ def train_bert(
     history = model.fit(
         x=x,
         y=y,
-        validation_split=validation_split,
         batch_size=batch_size,
         epochs=epochs,
         verbose=verbose,
+        validation_data=(x_test, y_test)
     )
-
-    if log:
-        print("Tokenizing Test")
-
-    start = timeit.default_timer()
-    x_test = tokenizer.tokenize(x_test)
-
-    if log:
-        print(f"Time Taken: {timeit.default_timer() - start:.4f}")
 
     y_pred_proba = model.predict(x_test, batch_size=batch_size, verbose=verbose)
     y_pred = np.round(y_pred_proba)
@@ -98,7 +97,6 @@ def train_bert(
             train_config += f"batch_size: {batch_size}\n"
             train_config += f"epochs: {epochs}\n"
             train_config += f"metrics: {metrics}\n"
-            train_config += f"validation_split: {validation_split}\n"
             train_config += f"history\n{history.history}\n"
             train_config += f"evaluation: {score}\n"
             f.write(train_config)
