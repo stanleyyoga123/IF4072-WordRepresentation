@@ -39,8 +39,8 @@ def main(
     train["text_a"] = train.text_a.progress_apply(simple_preprocess)
     test["text_a"] = test.text_a.progress_apply(simple_preprocess)
 
-    x_train = train["text_a"].values[:200]
-    y_train = train["label"][:200]
+    x_train = train["text_a"].values
+    y_train = train["label"]
     x_test = test["text_a"].values
     y_test = test["label"]
 
