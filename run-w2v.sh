@@ -18,20 +18,4 @@ echo "🧪 exp7 : SG | window : 3 | learning rate : 0.001 "
 python main.py -w2v -n exp7 -lr 0.001 -bs 64 -e 10 -t 1 -w 3 -msl 256
 echo "🧪 exp8 : SG | window : 3 | learning rate : 0.005 "
 python main.py -w2v -n exp8 -lr 0.005 -bs 64 -e 10 -t 1 -w 3 -msl 256
-echo "🧪 exp9 : CBOW | window : 5 | learning rate : 0.0001 w/ Fasttext"
-python main.py -ft -n exp9 -lr 0.0001 -bs 64 -e 10 -t 0 -w 5 -msl 256
-echo "🧪 exp10 : CBOW | window : 5 | learning rate : 0.0005 w/ Fasttext"
-python main.py -ft -n exp10 -lr 0.0005 -bs 64 -e 10 -t 0 -w 5 -msl 256
-echo "🧪 exp11 : CBOW | window : 3 | learning rate :0.0001 w/ Fasttext"
-python main.py -ft -n exp11 -lr 0.0001 -bs 64 -e 10 -t 0 -w 3 -msl 256
-echo "🧪 exp12 : CBOW | window : 3 | learning rate : 0.0005 w/ Fasttext"
-python main.py -ft -n exp12 -lr 0.0005 -bs 64 -e 10 -t 0 -w 3 -msl 256
-echo "🧪 exp13 : SG | window : 5 | learning rate : 0.0001 w/ Fasttext"
-python main.py -ft -n exp13 -lr 0.0001 -bs 64 -e 10 -t 1 -w 5 -msl 256
-echo "🧪 exp14 : SG | window : 5 | learning rate : 0.0005 w/ Fasttext"
-python main.py -ft -n exp14 -lr 0.0005 -bs 64 -e 10 -t 1 -w 5 -msl 256
-echo "🧪 exp15 : SG | window : 3 | learning rate : 0.0001 w/ Fasttext"
-python main.py -ft -n exp15 -lr 0.0001 -bs 64 -e 10 -t 1 -w 3 -msl 256
-echo "🧪 exp16 : SG | window : 3 | learning rate : 0.0005 w/ Fasttext"
-python main.py -ft -n exp16 -lr 0.0005 -bs 64 -e 10 -t 1 -w 3 -msl 256
 echo "✅ Training complete. Happy learning ♥️."

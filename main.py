@@ -132,7 +132,6 @@ if __name__ == "__main__":
                 config={
                     "window": window,
                     "sg": types,
-                    "min_count": 1,
                     "workers": -1,
                 },
                 types="ft",
@@ -147,7 +146,6 @@ if __name__ == "__main__":
                 config={
                     "window": window,
                     "sg": types,
-                    "min_count": 1,
                     "workers": -1,
                 },
                 types="w2v",
