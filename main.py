@@ -2,6 +2,8 @@ import argparse
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
+    
+    # bert
     parser.add_argument(
         "-b", "--bert", action="store_true", required=False, help="Train BERT Model"
     )
@@ -21,6 +23,26 @@ if __name__ == "__main__":
         "-lr", "--learningrate", required=False, help="Learning rate Used"
     )
     parser.add_argument("-e", "--epochs", required=False, help="Epochs Used")
+
+    # vspace
+    parser.add_argument(
+        "-vspace", action="store_true", required=False, help="Use Vector Space Model"
+    )
+    parser.add_argument(
+        "-lgbm", action="store_true", required=False, help="Train LightGBM Model"
+    )
+    parser.add_argument(
+        "-xgb", action="store_true", required=False, help="Train XGBoost Model"
+    )
+    parser.add_argument(
+        "-svm", action="store_true", required=False, help="Train SVM Model"
+    )
+    parser.add_argument(
+        "-tfidf", action="store_true", required=False, help="Vectorize with TFIDF"
+    )
+    parser.add_argument(
+        "-bow", action="store_true", required=False, help="Vectorize with Bag of Words"
+    )
 
     args = parser.parse_args()
     if args.bert:
@@ -50,3 +72,20 @@ if __name__ == "__main__":
         main_indobert(
             epochs=epochs, batch_size=batch_size, learning_rate=lr, max_seq_len=maxlen
         )
+    
+    elif args.vspace:
+        from src.vector_space.main import main_vector_space
+        if args.bow:
+            vs_vectorizer = 'bow'
+        else:
+            vs_vectorizer = 'tfidf'
+        if args.xgb:
+            vs_model = 'xgb'
+        elif args.svm:
+            vs_model = 'svm'
+        else:
+            vs_model = 'lgbm'
+        # e.g. python main.py -vspace -tfidf -lgbm
+        main_vector_space(vectorizer=vs_vectorizer, model=vs_model)
+            
+
