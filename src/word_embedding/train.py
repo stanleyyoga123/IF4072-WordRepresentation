@@ -74,7 +74,7 @@ def pipeline(
     early_stopping = tf.keras.callbacks.EarlyStopping(
         monitor="val_accuracy",
         verbose=verbose,
-        patience=2,
+        patience=3,
         mode="max",
         restore_best_weights=True,
     )
