@@ -1,11 +1,9 @@
 import argparse
 
-from src.word_embedding import main
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
 
-    # Word 2 vec with context
+    # bert
     parser.add_argument(
         "-b", "--bert", action="store_true", required=False, help="Train BERT Model"
     )
@@ -16,7 +14,6 @@ if __name__ == "__main__":
         required=False,
         help="Train IndoBERT Model",
     )
-
     # Word 2 vec with no context
     parser.add_argument(
         "-w2v",
@@ -35,6 +32,26 @@ if __name__ == "__main__":
     parser.add_argument("-w", "--window", required=False, help="Window size")
     parser.add_argument("-t", "--type", required=False, help="1: Skip-gram, else: CBOW")
 
+    # vspace
+    parser.add_argument(
+        "-vspace", action="store_true", required=False, help="Use Vector Space Model"
+    )
+    parser.add_argument(
+        "-lgbm", action="store_true", required=False, help="Train LightGBM Model"
+    )
+    parser.add_argument(
+        "-xgb", action="store_true", required=False, help="Train XGBoost Model"
+    )
+    parser.add_argument(
+        "-svm", action="store_true", required=False, help="Train SVM Model"
+    )
+    parser.add_argument(
+        "-tfidf", action="store_true", required=False, help="Vectorize with TFIDF"
+    )
+    parser.add_argument(
+        "-bow", action="store_true", required=False, help="Vectorize with Bag of Words"
+    )
+
     # All model
     parser.add_argument("-n", "--name", required=False, help="Model Name")
     parser.add_argument(
@@ -47,9 +64,54 @@ if __name__ == "__main__":
     parser.add_argument("-e", "--epochs", required=False, help="Epochs Used")
 
     args = parser.parse_args()
+    if args.bert:
+        from src.word_embedding_with_context.bert import main_bert
 
-    # python main.py -w2v -n testing -lr 0.1 -bs 64 -e 2 -t 0 -w 5 -msl 128
-    if args.word2vec or args.fasttext:
+        epochs = int(args.epochs)
+        lr = float(args.learningrate)
+        batch_size = int(args.batchsize)
+        maxlen = int(args.maxseqlen)
+        name = args.name
+        main_bert(
+            name=name,
+            epochs=epochs,
+            batch_size=batch_size,
+            learning_rate=lr,
+            max_seq_len=maxlen,
+        )
+
+    elif args.indobert:
+        from src.word_embedding_with_context.indobert import main_indobert
+
+        epochs = int(args.epochs)
+        lr = float(args.learningrate)
+        batch_size = int(args.batchsize)
+        maxlen = int(args.maxseqlen)
+
+        main_indobert(
+            epochs=epochs, batch_size=batch_size, learning_rate=lr, max_seq_len=maxlen
+        )
+
+    elif args.vspace:
+        from src.vector_space.main import main_vector_space
+
+        if args.bow:
+            vs_vectorizer = "bow"
+        else:
+            vs_vectorizer = "tfidf"
+        if args.xgb:
+            vs_model = "xgb"
+        elif args.svm:
+            vs_model = "svm"
+        else:
+            vs_model = "lgbm"
+        # e.g. python main.py -vspace -tfidf -lgbm
+        main_vector_space(vectorizer=vs_vectorizer, model=vs_model)
+
+    # e.g. python main.py -w2v -n testing -lr 0.1 -bs 64 -e 2 -t 0 -w 5 -msl 128
+    elif args.word2vec or args.fasttext:
+        from src.word_embedding import main
+
         name = args.name
         lr = float(args.learningrate)
         batch_size = int(args.batchsize)
@@ -95,33 +157,3 @@ if __name__ == "__main__":
                 max_length=maxlen,
                 detail=name,
             )
-
-    elif args.bert:
-        pass
-        # from src.word_embedding_with_context.bert import main_bert
-
-        # epochs = int(args.epochs)
-        # lr = float(args.learningrate)
-        # batch_size = int(args.batchsize)
-        # maxlen = int(args.maxseqlen)
-        # name = args.name
-        # main_bert(
-        #     name=name,
-        #     epochs=epochs,
-        #     batch_size=batch_size,
-        #     learning_rate=lr,
-        #     max_seq_len=maxlen,
-        # )
-
-    elif args.indobert:
-        pass
-        # from src.word_embedding_with_context.indobert import main_indobert
-
-        # epochs = int(args.epochs)
-        # lr = float(args.learningrate)
-        # batch_size = int(args.batchsize)
-        # maxlen = int(args.maxseqlen)
-
-        # main_indobert(
-        #     epochs=epochs, batch_size=batch_size, learning_rate=lr, max_seq_len=maxlen
-        # )
