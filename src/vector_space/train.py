@@ -7,6 +7,8 @@ from xgboost import XGBClassifier
 from lightgbm import LGBMClassifier
 from sklearn.svm import SVC
 
+
+from sklearn import metrics
 from sklearn.model_selection import train_test_split
 from src.vector_space import vectorize_data
 
@@ -87,8 +89,16 @@ def train_vector_space(
         model.fit(x_train_split, y_train_split)
 
     y_pred = model.predict(x_test_v) 
-    accuracy = np.mean(y_pred == y_test)
-    print("Accuracy: {}".format(accuracy))
+    
+    print(metrics.confusion_matrix(y_test, y_pred))
+    prec = metrics.precision_score(y_test, y_pred)
+    rec = metrics.recall_score(y_test, y_pred)
+    f1 = metrics.f1_score(y_test, y_pred)
+    acc = metrics.accuracy_score(y_test, y_pred)
+    print('Precision: {}'.format(prec))
+    print('Recall: {}'.format(rec))
+    print('F1: {}'.format(f1))
+    print('Accuracy: {}'.format(acc))
 
     if save_pred:
 
