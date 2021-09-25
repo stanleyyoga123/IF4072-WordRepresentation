@@ -69,12 +69,13 @@ if __name__ == "__main__":
             main(
                 config={
                     "window": window,
-                    # "sg": types,  
-                    "min_count":1,
+                    "sg": types,
+                    "min_count": 1,
                     "workers": -1,
                 },
                 types="ft",
                 learning_rate=lr,
+                epochs=epochs,
                 batch_size=batch_size,
                 max_length=maxlen,
                 detail=name,
@@ -83,12 +84,13 @@ if __name__ == "__main__":
             main(
                 config={
                     "window": window,
-                    # "sg": types,  
-                    "min_count":1,
+                    "sg": types,
+                    "min_count": 1,
                     "workers": -1,
                 },
                 types="w2v",
                 learning_rate=lr,
+                epochs=epochs,
                 batch_size=batch_size,
                 max_length=maxlen,
                 detail=name,

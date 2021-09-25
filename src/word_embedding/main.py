@@ -24,6 +24,7 @@ def main(
     metrics=["accuracy"],
     learning_rate=1e-3,
     batch_size=64,
+    epochs=5,
     max_length=128,
     detail="",
 ):
@@ -38,8 +39,8 @@ def main(
     train["text_a"] = train.text_a.progress_apply(simple_preprocess)
     test["text_a"] = test.text_a.progress_apply(simple_preprocess)
 
-    x_train = train["text_a"].values
-    y_train = train["label"]
+    x_train = train["text_a"].values[:200]
+    y_train = train["label"][:200]
     x_test = test["text_a"].values
     y_test = test["label"]
 
@@ -52,7 +53,6 @@ def main(
 
     optimizer = Adam(learning_rate=learning_rate)
 
-
     pipeline(
         x_train,
         y_train,
@@ -64,6 +64,7 @@ def main(
         optimizer,
         metrics,
         batch_size=batch_size,
+        epochs=epochs,
         max_length=max_length,
         detail=detail,
     )

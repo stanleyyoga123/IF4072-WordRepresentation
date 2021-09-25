@@ -5,12 +5,13 @@ import timeit
 
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 
 import tensorflow as tf
 from tensorflow.keras.utils import plot_model
 from sklearn.model_selection import train_test_split
 
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, classification_report
 
 from src.word_embedding.tokenizer import W2VTokenizer
 from src.word_embedding.classifier import create_classifier
@@ -112,6 +113,7 @@ def pipeline(
 
     # loss, f1_score, precision_score, recall_score = model.evaluate(x_test_tokenized, y_test, verbose=2)
     # print("Metric score (F1): {:5.2f}%".format(100 * f1_score))
+
     y_pred_proba = model.predict(
         x_test_tokenized, batch_size=batch_size, verbose=verbose
     )
@@ -142,9 +144,42 @@ def pipeline(
                 print("Saving word2vec model...")
             w2v_path = os.path.join(model_folder, model_name)
             w2v.save(w2v_path)
+            
+            # save reports for evaluation
+            loss_history = history.history['loss']
+            val_loss_history = history.history['val_accuracy']
+            epochs = range(1, len(loss_history) + 1)
+            plt.plot(epochs, loss_history, 'y', label='Training loss')
+            plt.plot(epochs, val_loss_history, 'r', label='Validation loss')
+            plt.title('Training and validation loss')
+            plt.xlabel('Epochs')
+            plt.ylabel('Loss')
+            plt.legend()
+            plt.savefig(os.path.join(model_folder, "loss.png"))
+            plt.clf()
+            
+            acc_score = history.history['accuracy']
+            val_acc_score = history.history['val_accuracy']
+            plt.plot(epochs, acc_score, 'y', label='Training acc')
+            plt.plot(epochs, val_acc_score, 'r', label='Validation acc')
+            plt.title('Training and validation acc')
+            plt.xlabel('Epochs')
+            plt.ylabel('Acc')
+            plt.legend()
+            plt.savefig(os.path.join(model_folder, "metric.png"))
+            plt.clf()
+
+            report = classification_report(y_test, y_pred,
+                               digits = 3,
+                               output_dict = False
+                              )
+            print(report)
+            with open(os.path.join(model_folder, "clf-report.txt"), "w") as f:
+                f.write(report)
 
         if save_config:
             configs = {
+                "types" : types,
                 "max_length": max_length,
                 "loss": loss.get_config(),
                 "optimizer": optimizer.get_config(),
