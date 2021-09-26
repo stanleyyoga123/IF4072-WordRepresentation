@@ -134,9 +134,6 @@ bin/**
 # dataset
 data/*
 
-# personal research notebooks
-notebooks/*
-
 # reports
 reports/*
 
