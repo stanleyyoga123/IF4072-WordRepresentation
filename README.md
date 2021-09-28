@@ -1,6 +1,32 @@
 # IF4072-WordRepresentation
 
-# To Run
+`IF4072-WordRepresentation` is an collection of **scripts** for IF4072 Natural Languange Processing **Text Classification** task. 
+
+Contains `scripts` for solving **Text Classification** task based on:
+- Vector Space Model
+- Word Embedding (with no context)
+- Bert based model
+
+## Prerequisites
+For Vector Space model:
+- xgboost
+- sklearn
+- lgbm
+
+For Word Embedding with no context:
+- gensim
+- sklearn
+
+For Bert-based model:
+- Bert 
+  - transformers
+  - tensorflow
+  - sklearn
+- Indobert
+  - transformers
+  - pytorch
+
+## How to Run
 ```
 python main.py <args>
 ```
@@ -44,3 +70,7 @@ python main.py -ib -msl 512 -bs 4 -lr "3e-6" -e 3
 ```
 Using indobert model, 512 max sequence length, 4 batch size, 3e-6 learning rate, 3 epochs
 
+## Contributors
+- 13518018 | Steve Bezalel (Vector Space Model)
+- 13518122 | Stefanus Stanley Yoga Setiawan (Bert-based Model)
+- 13518138 | William (Word2Vec no context Model)
